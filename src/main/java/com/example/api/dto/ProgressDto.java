@@ -22,7 +22,11 @@ public class ProgressDto {
     private Float minuto;
     private Float segundo;
 
-    /* public ProgressDto passingDefaultValues() {
-        if (this.getHora() == null) this.setHora(0);
-    } */
+    public ProgressDto passingDefaultValues() {
+        if (this.getHora() == null) this.setHora(0.0f);
+        if (this.getMinuto() == null) this.setMinuto(0.0f);
+        if (this.getSegundo() == null) this.setSegundo(0.0f);
+
+        return this;
+    }
 }

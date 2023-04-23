@@ -40,7 +40,7 @@ public class ProgressController {
     @PostMapping
     public ResponseEntity<Object> post(@RequestBody @Valid ProgressDto progressDto) {
         try {
-            progressRepository.post(progressDto);   
+            progressRepository.post(progressDto.passingDefaultValues());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error");
         }
