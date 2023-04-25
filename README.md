@@ -97,17 +97,17 @@ dia: INT NOT NULL,<br>
 hora: INT NOT NULL,<br>
 minuto: INT NOT NULL,<br>
 segundo: INT NOT NULL<br>
-<br>
+<br><br>
 
 ### GET_ALL:
 Retorna uma lista de progress registrados<br>
 <br>
-Url: localhost:8080/progress<br>
+Url: localhost:8080/progress<br><br>
 
 ### GET_ONE: /{progress_id}
 Retorna um progress específico passando como parâmetro "progress_id"<br>
 <br>
-Exemplo de url: localhost:8080/progress/296a4172-d66d-11ed-8c84-7eae77e2dcf9<br>
+Exemplo de url: localhost:8080/progress/296a4172-d66d-11ed-8c84-7eae77e2dcf9<br><br>
 
 ### POST:
 Adiciona um item a tabela pelo formato JSON.<br>
@@ -142,7 +142,7 @@ Exemplo: {<br>
     "segundo": 0<br>
 }<br>
 <br>
-Url: localhost:8080/progress<br>
+Url: localhost:8080/progress<br><br>
 
 ### PUT: /{progress_id}
 Altera os valores do progress já inserido, só é necessário enviar o que deseja alterar pelo formato JSON, o  progress será identificado pelo "progress_id".<br>
@@ -152,7 +152,7 @@ Exemplo: {<br>
     dia: 24<br>
 }<br>
 <br>
-Url: localhost:8080/progress/296a4172-d66d-11ed-8c84-7eae77e2dcf9<br>
+Url: localhost:8080/progress/296a4172-d66d-11ed-8c84-7eae77e2dcf9<br><br>
 
 ### DELETE: /{progress_id}
 Deleta um item da tabela passando o "progress_id".<br>
