@@ -31,6 +31,8 @@ public class ComidaDto {
     }
 
     public ComidaDto formattingToPut() {
+        if (this.getQuantidade() == 0 && (this.getCarb() != null || this.getProtl() != null || this.getProth() != null || this.getFat() != null)) throw new Error();
+
         if (this.getCarb() != null) this.setCarb(this.getCarb()/this.getQuantidade());
         if (this.getProtl() != null) this.setProtl(this.getProtl()/this.getQuantidade());
         if (this.getProth() != null) this.setProth(this.getProth()/this.getQuantidade());

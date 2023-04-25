@@ -30,12 +30,20 @@ public class ComidaController {
 
     @GetMapping
     public ResponseEntity<Object> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(comidaRepository.getAll());
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(comidaRepository.getAll());   
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
+        }
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<Object> getOne(@PathVariable(value = "uuid")String uuid) {
-        return ResponseEntity.status(HttpStatus.OK).body(comidaRepository.getOne(uuid));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(comidaRepository.getOne(uuid));   
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
+        }
     }
 
     @PostMapping
@@ -43,7 +51,7 @@ public class ComidaController {
         try {
             comidaRepository.post(comidaDto.formattingToPost());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Added");
@@ -51,13 +59,23 @@ public class ComidaController {
 
     @PutMapping("/{uuid}")
     public ResponseEntity<Object> put(@RequestBody ComidaDto comidaDto, @PathVariable(value = "uuid")String uuid) {
-        comidaRepository.put(comidaDto.formattingToPut(), uuid);
+        try {
+            comidaRepository.put(comidaDto.formattingToPut(), uuid);    
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body("Updated");
     }
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Object> delete(@PathVariable(value = "uuid")String uuid) {
-        comidaRepository.delete(uuid);
+        try {
+            comidaRepository.delete(uuid);    
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
+        }
+        
         return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
 }
