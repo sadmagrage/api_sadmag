@@ -2,7 +2,7 @@
 
 #COMIDA: /comida
 
-Definição:
+Definição:\n
 comida_id -> identificador do alimento, passado como UUID e reservado como binário
 carb -> todo tipo de carboidrato
 protl -> proteína de baixo valor biológico, majoritariamente encontrado em vegetais
