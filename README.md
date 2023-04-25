@@ -1,8 +1,8 @@
 # api_sadmag
 
-#COMIDA: /comida
+## COMIDA: /comida
 
-Definição:\n
+Definição:<br>
 comida_id -> identificador do alimento, passado como UUID e reservado como binário
 carb -> todo tipo de carboidrato
 protl -> proteína de baixo valor biológico, majoritariamente encontrado em vegetais
@@ -19,17 +19,17 @@ proth: FLOAT NOT NULL,
 fat: FLOAT NOT NULL,
 img: VARCHAR(255) NOT NULL
 
-GET_ALL:
+### GET_ALL:
 Retorna a lista de alimentos registrados
 
 Url: localhost:8080/comida
 
-GET_ONE: /{comida_id}
+### GET_ONE: /{comida_id}
 Retorna um alimento específico passando como parâmetro "comida_id"
 
 Exemplo de url: localhost:8080/comida/3e7051ea-9e3d-11ed-982e-1cb72c8ac6b9
 
-POST:
+### POST:
 Adiciona um item a tabela pelo formato JSON.
 Em "quantidade" será passado um valor em gramas, que dividirão carb, protl, proth e fat. Por exemplo, se a cada 100 gramas de um alimento, ele contém 10 gramas de carboidrato, a quantidade deve ser passada como 100, e o "carb" como 10, e no banco de dados, o "carb" estará como 0.1, equivalendo a 0.1g de carboidrato a cada grama do alimento.
 Valores nutricionais (carb, protl, proth, fat) se não passados, serão considerados como 0.
@@ -67,7 +67,7 @@ Exemplo: {
 Url: localhost:8080/comida
 
 
-PUT: /{comida_id}
+### PUT: /{comida_id}
 Altera os valores do alimentos já inserido, só é necessário enviar o que deseja alterar pelo formato JSON, o alimento será identificado pelo "comida_id".
 Sempre que um dado valor nutricional (carb, protl, proth, fat) for passado, deve ser acompanhado de "quantidade", que deve ser diferente de 0.
 Exemplo: {
@@ -78,12 +78,12 @@ Exemplo: {
 
 Exemplo de url: localhost:8080/comida/3e7051ea-9e3d-11ed-982e-1cb72c8ac6b9
 
-DELETE: /{comida_id}
+### DELETE: /{comida_id}
 Deleta um item da tabela passando o "comida_id".
 
 Exemplo de url: localhost:8080/comida/3e7051ea-9e3d-11ed-982e-1cb72c8ac6b9
 
-#PROGRESS: /progress
+## PROGRESS: /progress
 
 Definição:
 progress -> momento de um exato dia e hora, especificado por ano, mes, dia, hora, minuto e segundo.
@@ -100,17 +100,17 @@ minuto: INT NOT NULL,
 segundo: INT NOT NULL
 
 
-GET_ALL:
+### GET_ALL:
 Retorna uma lista de progress registrados
 
 Url: localhost:8080/progress
 
-GET_ONE: /{progress_id}
+### GET_ONE: /{progress_id}
 Retorna um progress específico passando como parâmetro "progress_id"
 
 Exemplo de url: localhost:8080/progress/296a4172-d66d-11ed-8c84-7eae77e2dcf9
 
-POST:
+### POST:
 Adiciona um item a tabela pelo formato JSON.
 Hora, minuto e segundo serão considerados como 0, caso não tenham um valor inserido.
 
@@ -145,7 +145,7 @@ Exemplo: {
 
 Url: localhost:8080/progress
 
-PUT: /{progress_id}
+### PUT: /{progress_id}
 Altera os valores do progress já inserido, só é necessário enviar o que deseja alterar pelo formato JSON, o  progress será identificado pelo "progress_id".
 Exemplo: {
     ano: 2019,
@@ -155,7 +155,7 @@ Exemplo: {
 
 Url: localhost:8080/progress/296a4172-d66d-11ed-8c84-7eae77e2dcf9
 
-DELETE: /{progress_id}
+### DELETE: /{progress_id}
 Deleta um item da tabela passando o "progress_id".
 
 Exemplo de Url: localhost:8080/progress/296a4172-d66d-11ed-8c84-7eae77e2dcf9
