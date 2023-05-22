@@ -1,79 +1,74 @@
 package com.example.api.services;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.api.dto.ProgressDto;
 import com.example.api.models.ProgressModel;
 import com.example.api.repositories.ProgressRepository;
 
 @Service
-public class ProgressService implements ProgressRepository {
+public class ProgressService {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    ProgressRepository progressRepository;
 
-	@Override
-	public List<ProgressModel> getAll() {
-		return jdbcTemplate.query("SELECT BIN_TO_UUID(progress_id) as progress_id, nome, ano, mes, dia, hora, minuto, segundo FROM progress ORDER BY nome ASC;", new BeanPropertyRowMapper<ProgressModel>(ProgressModel.class));
+	public ResponseEntity<Object> findAll() {
+		return ResponseEntity.status(HttpStatus.OK).body(progressRepository.findAllOrderBy());
 	}
 
-	@Override
-	public ProgressModel getOne(String uuid) {
-		return jdbcTemplate.queryForObject("SELECT BIN_TO_UUID(progress_id) as progress_id, nome, ano, mes, dia, hora, minuto, segundo FROM progress WHERE BIN_TO_UUID(progress_id) = ?;", new BeanPropertyRowMapper<ProgressModel>(ProgressModel.class), new Object[] { uuid });
+	public ResponseEntity<Object> findOne(UUID uuid) {
+		var progressModelOptional = progressRepository.findById(uuid);
+
+		if (!progressModelOptional.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Progress not found.");
+
+		return ResponseEntity.status(HttpStatus.OK).body(progressModelOptional.get());
 	}
 
-	@Override
-	public void post(ProgressDto progressDto) {
-		List<Object[]> params = new ArrayList<Object[]>();
+	@Transactional
+	public ResponseEntity<Object> saveProgress(ProgressDto progressDto) {
+		var progressModel = new ProgressModel();
+		try {
+			BeanUtils.copyProperties(progressDto, progressModel);
 
-		params.add(new Object[] {
-			progressDto.getNome(),
-			progressDto.getAno(),
-			progressDto.getMes(),
-			progressDto.getDia(),
-			progressDto.getHora(),
-			progressDto.getMinuto(),
-			progressDto.getSegundo()
-		});
+			progressRepository.save(progressModel);
+			return ResponseEntity.status(HttpStatus.CREATED).body("Progress created.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CREATED).body("Error creating progress.");
+		}
+	}
+	
+	@Transactional
+	public ResponseEntity<Object> updateProgress(ProgressDto progressDto, UUID uuid) {
+		var progressModel = new ProgressModel();
 
-		jdbcTemplate.batchUpdate("INSERT INTO progress (progress_id, nome, ano, mes, dia, hora, minuto, segundo) values (UUID_TO_BIN(UUID()), ?, ?, ?, ?, ?, ?, ?);", params);
+		if (!progressRepository.findById(uuid).isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Progress not found.");
+
+		try {
+			BeanUtils.copyProperties(progressDto, progressModel);
+
+			progressModel.setProgress_id(uuid);
+			progressRepository.save(progressModel);
+
+			return ResponseEntity.status(HttpStatus.OK).body("Progress updated.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Error updating progress.");
+		}
 	}
 
-	@Override
-	public void put(ProgressDto progressDto, String uuid) {
+	@Transactional
+	public ResponseEntity<Object> delete(UUID uuid) {
+		var progressModelOptional = progressRepository.findById(uuid);
 
-        String query = "UPDATE progress SET ";
-        
-        try {
-            for (Field campo : progressDto.getClass().getDeclaredFields()) {
-                campo.setAccessible(true);
-                if (campo.get(progressDto) == null) continue;
+		if (!progressModelOptional.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Progress not found.");
 
-                String[] typeofArr = campo.get(progressDto).getClass().toString().split("[.]");
-                String typeof = typeofArr[typeofArr.length - 1];
-
-                query += campo.getName() + " = " + ((typeof.equals("String")) ? "\"" + campo.get(progressDto) + "\"" : campo.get(progressDto)) + ", ";
-            }
-            query = query.substring(0, query.length() - 2) + " WHERE BIN_TO_UUID(progress_id) = ?";
-            jdbcTemplate.update(query, new Object[] { uuid });
-        } 
-        catch (IllegalArgumentException e) {
-                e.printStackTrace();
-        } 
-        catch (IllegalAccessException e) {
-                e.printStackTrace();
-        }
-	}
-
-	@Override
-	public void delete(String uuid) {
-		jdbcTemplate.update("DELETE FROM progress WHERE BIN_TO_UUID(progress_id) = ?", new Object[]{ uuid });
+		progressRepository.deleteById(uuid);
+		return ResponseEntity.status(HttpStatus.OK).body("Progress deleted.");
 	}
 }

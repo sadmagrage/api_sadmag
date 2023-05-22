@@ -67,13 +67,8 @@ Url: localhost:8080/comida<br>
 <br>
 <br>
 ### PUT: /{comida_id}
-Altera os valores do alimentos já inserido, só é necessário enviar o que deseja alterar pelo formato JSON, o alimento será identificado pelo "comida_id".<br>
+Altera os valores do alimentos já inserido, o alimento será identificado pelo "comida_id".<br>
 Sempre que um dado valor nutricional (carb, protl, proth, fat) for passado, deve ser acompanhado de "quantidade", que deve ser diferente de 0.<br>
-Exemplo: {<br>
-    "quantidade": 100,<br>
-    "carb": 5.2,<br>
-    "protl": 3.1<br>
-}<br>
 <br>
 Exemplo de url: localhost:8080/comida/3e7051ea-9e3d-11ed-982e-1cb72c8ac6b9<br>
 <br>

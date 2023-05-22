@@ -13,20 +13,12 @@ public class ProgressDto {
     @NotBlank
     private String nome;
     @NotNull
-    private Float ano;
+    private int ano;
     @NotNull
-    private Float mes;
+    private int mes;
     @NotNull
-    private Float dia;
-    private Float hora;
-    private Float minuto;
-    private Float segundo;
-
-    public ProgressDto passingDefaultValues() {
-        if (this.getHora() == null) this.setHora(0.0f);
-        if (this.getMinuto() == null) this.setMinuto(0.0f);
-        if (this.getSegundo() == null) this.setSegundo(0.0f);
-
-        return this;
-    }
+    private int dia;
+    private int hora;
+    private int minuto;
+    private int segundo;
 }

@@ -1,8 +1,9 @@
 package com.example.api.controllers;
 
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.api.dto.ProgressDto;
-import com.example.api.repositories.ProgressRepository;
+import com.example.api.services.ProgressService;
 
 import jakarta.validation.Valid;
 
@@ -25,41 +26,30 @@ import jakarta.validation.Valid;
 public class ProgressController {
     
     @Autowired
-    private ProgressRepository progressRepository;
+    private ProgressService progressService;
     
     @GetMapping
     public ResponseEntity<Object> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(progressRepository.getAll());
+        return progressService.findAll();
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<Object> getOne(@PathVariable(value = "uuid") String uuid) {
-        return ResponseEntity.status(HttpStatus.OK).body(progressRepository.getOne(uuid));
+    public ResponseEntity<Object> getOne(@PathVariable(value = "uuid") UUID uuid) {
+        return progressService.findOne(uuid);
     }
 
     @PostMapping
     public ResponseEntity<Object> post(@RequestBody @Valid ProgressDto progressDto) {
-        try {
-            progressRepository.post(progressDto.passingDefaultValues());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error");
-        }
-        
-        return ResponseEntity.status(HttpStatus.CREATED).body("Created");
+        return progressService.saveProgress(progressDto);
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<Object> put(@RequestBody ProgressDto progressDto, @PathVariable(value = "uuid") String uuid) {
-        System.out.println(progressDto);
-        progressRepository.put(progressDto, uuid);
-
-        return ResponseEntity.status(HttpStatus.OK).body("Updated");
+    public ResponseEntity<Object> put(@RequestBody @Valid ProgressDto progressDto, @PathVariable(value = "uuid") UUID uuid) {
+        return progressService.updateProgress(progressDto, uuid);
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<Object> delete(@PathVariable(value = "uuid") String uuid) {
-        progressRepository.delete(uuid);
-
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
+    public ResponseEntity<Object> delete(@PathVariable(value = "uuid") UUID uuid) {
+        return progressService.delete(uuid);
     }
 }
