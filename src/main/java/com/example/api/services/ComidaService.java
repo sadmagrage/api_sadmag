@@ -1,78 +1,76 @@
 package com.example.api.services;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.api.dto.ComidaDto;
 import com.example.api.models.ComidaModel;
 import com.example.api.repositories.ComidaRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
-public class ComidaService implements ComidaRepository{
+public class ComidaService {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    ComidaRepository comidaRepository;
 
-    @Override
-    public List<ComidaModel> getAll() {
-        return jdbcTemplate.query("SELECT BIN_TO_UUID(comida_id) as comida_id, nome, carb, protl, proth, fat, img FROM comida", new BeanPropertyRowMapper<ComidaModel>(ComidaModel.class));
+    public ResponseEntity<Object> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(comidaRepository.findAll());
     }
 
-    @Override
-    public ComidaModel getOne(String uuid) {
-        return jdbcTemplate.queryForObject("SELECT BIN_TO_UUID(comida_id) as comida_id, nome, carb, protl, proth, fat, img FROM comida WHERE BIN_TO_UUID(comida_id) = ?", new BeanPropertyRowMapper<ComidaModel>(ComidaModel.class), new Object[] { uuid });
-    }
+    public ResponseEntity<Object> findOne(UUID uuid) {
+        var comidaModelOptional = comidaRepository.findById(uuid);
 
-    @Override
-    public void post(ComidaDto comidaDto) {
-        List<Object[]> params = new ArrayList<Object[]>();
-
-        params.add(new Object[] {
-            comidaDto.getNome(),
-            comidaDto.getCarb(),
-            comidaDto.getProtl(),
-            comidaDto.getProth(),
-            comidaDto.getFat(),
-            comidaDto.getImg()
-        });
+        if (!comidaModelOptional.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comida not found.");
         
-        jdbcTemplate.batchUpdate("INSERT INTO comida (comida_id, nome, carb, protl, proth, fat, img) values (UUID_TO_BIN(UUID()), ?, ?, ?, ?, ?, ?)", params);
+        return ResponseEntity.status(HttpStatus.OK).body(comidaModelOptional.get());
     }
 
-    @Override
-    public void put(ComidaDto comidaDto, String uuid) {
-        String query = "UPDATE comida SET ";
-        
+    @Transactional
+    public ResponseEntity<Object> saveComida(ComidaDto comidaDto) {
+        var comidaModel = new ComidaModel();
+
         try {
-            for (Field campo : comidaDto.getClass().getDeclaredFields()) {
-                if (campo.getName() == "quantidade") continue;
-                campo.setAccessible(true);
-                if (campo.get(comidaDto) == null) continue;
+            BeanUtils.copyProperties(comidaDto.formatting(), comidaModel);
+            comidaRepository.save(comidaModel);
 
-                String[] typeofArr = campo.get(comidaDto).getClass().toString().split("[.]");
-                String typeof = typeofArr[typeofArr.length - 1];
+            return ResponseEntity.status(HttpStatus.CREATED).body("Comida created.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error creating comida.");        }
+    }
 
-                query += campo.getName() + " = " + ((typeof.equals("String")) ? "\"" + campo.get(comidaDto) + "\"" : campo.get(comidaDto)) + ", ";
-            }
-            query = query.substring(0, query.length() - 2) + " WHERE BIN_TO_UUID(comida_id) = ?";
-            jdbcTemplate.update(query, new Object[] { uuid });
-        } 
-        catch (IllegalArgumentException e) {
-                e.printStackTrace();
-        } 
-        catch (IllegalAccessException e) {
-                e.printStackTrace();
+    @Transactional
+    public ResponseEntity<Object> updateComida(ComidaDto comidaDto, UUID uuid) {
+        var comidaModel = new ComidaModel();
+        var comidaModelOptional = comidaRepository.findById(uuid);
+
+        if (!comidaModelOptional.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comida not found.");
+
+        try {
+            BeanUtils.copyProperties(comidaDto.formatting(), comidaModel);
+            comidaModel.setComida_id(uuid);
+            
+            comidaRepository.save(comidaModel);
+
+            return ResponseEntity.status(HttpStatus.OK).body("Comida updated.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error updating comida.");
         }
     }
 
-    @Override
-    public void delete(String uuid) {
-        jdbcTemplate.update("DELETE FROM comida WHERE BIN_TO_UUID(comida_id) = ?;", new Object[] { uuid });
+    @Transactional
+    public ResponseEntity<Object> deleteComida(UUID uuid) {
+        var comidaModelOptional = comidaRepository.findById(uuid);
+
+        if (!comidaModelOptional.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comida not found.");
+
+        comidaRepository.deleteById(uuid);
+        return ResponseEntity.status(HttpStatus.OK).body("Comida deleted.");
     }
 }

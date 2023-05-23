@@ -21,22 +21,11 @@ public class ComidaDto {
     private Float fat;
     private String img;
     
-    public ComidaDto formattingToPost() {
+    public ComidaDto formatting() {
         this.setCarb((this.getCarb() != null) ? this.getCarb()/this.getQuantidade() : 0.0f);
         this.setProtl((this.getProtl() != null) ? this.getProtl()/this.getQuantidade() : 0.0f);
         this.setProth((this.getProth() != null) ? this.getProth()/this.getQuantidade() : 0.0f);
         this.setFat((this.getFat() != null) ? this.getFat()/this.getQuantidade() : 0.0f);
-
-        return this;
-    }
-
-    public ComidaDto formattingToPut() {
-        if (this.getQuantidade() == 0 && (this.getCarb() != null || this.getProtl() != null || this.getProth() != null || this.getFat() != null)) throw new Error();
-
-        if (this.getCarb() != null) this.setCarb(this.getCarb()/this.getQuantidade());
-        if (this.getProtl() != null) this.setProtl(this.getProtl()/this.getQuantidade());
-        if (this.getProth() != null) this.setProth(this.getProth()/this.getQuantidade());
-        if (this.getFat() != null) this.setFat(this.getFat()/this.getQuantidade());
 
         return this;
     }
