@@ -140,12 +140,7 @@ Exemplo: {<br>
 Url: localhost:8080/progress<br><br>
 
 ### PUT: /{progress_id}
-Altera os valores do progress já inserido, só é necessário enviar o que deseja alterar pelo formato JSON, o  progress será identificado pelo "progress_id".<br>
-Exemplo: {<br>
-    ano: 2019,<br>
-    mes: 12,<br>
-    dia: 24<br>
-}<br>
+Altera os valores do progress já inserido, o  progress será identificado pelo "progress_id".<br>
 <br>
 Url: localhost:8080/progress/296a4172-d66d-11ed-8c84-7eae77e2dcf9<br><br>
 
