@@ -25,3 +25,6 @@ replay_pid*
 
 #properties
 *.properties
+
+#vscode
+.vscode/
