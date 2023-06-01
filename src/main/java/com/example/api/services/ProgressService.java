@@ -20,7 +20,7 @@ public class ProgressService {
     ProgressRepository progressRepository;
 
 	public ResponseEntity<Object> findAll() {
-		return ResponseEntity.status(HttpStatus.OK).body(progressRepository.findAllOrderBy());
+		return ResponseEntity.status(HttpStatus.OK).body(progressRepository.findAll());
 	}
 
 	public ResponseEntity<Object> findOne(UUID uuid) {

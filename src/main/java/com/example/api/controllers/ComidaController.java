@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "https://sadmagrage.github.io", maxAge = 3600)
 @RequestMapping("/comida")
 public class ComidaController {
 
@@ -45,7 +45,7 @@ public class ComidaController {
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<Object> put(@RequestBody ComidaDto comidaDto, @PathVariable(value = "uuid") UUID uuid) {
+    public ResponseEntity<Object> put(@RequestBody @Valid ComidaDto comidaDto, @PathVariable(value = "uuid") UUID uuid) {
         return comidaService.updateComida(comidaDto, uuid);
     }
 

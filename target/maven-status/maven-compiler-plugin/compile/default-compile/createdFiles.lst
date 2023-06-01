@@ -1,9 +1,11 @@
 com/example/api/controllers/ProgressController.class
-com/example/api/models/OptionsModel.class
-com/example/api/services/OptionsService.class
-com/example/api/repositories/OptionsRepository.class
+com/example/api/repositories/ComidaRepository.class
+com/example/api/dto/ProgressDto.class
 com/example/api/repositories/ProgressRepository.class
 com/example/api/ApiApplication.class
+com/example/api/services/ComidaService.class
 com/example/api/services/ProgressService.class
-com/example/api/controllers/OptionsController.class
+com/example/api/models/ComidaModel.class
+com/example/api/models/UserModel.class
+com/example/api/repositories/UserRepository.class
 com/example/api/models/ProgressModel.class

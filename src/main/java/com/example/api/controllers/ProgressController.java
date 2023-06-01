@@ -21,7 +21,7 @@ import com.example.api.services.ProgressService;
 import jakarta.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "https://sadmagrage.github.io", maxAge = 3600)
 @RequestMapping("/progress")
 public class ProgressController {
     
